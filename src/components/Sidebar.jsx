@@ -4,6 +4,7 @@ function Sidebar({
   handleRoute,
   trafficLevel,
   setTrafficLevel,
+  onBlockChange,
 }) {
 
   const [source, setSource] = useState("");
@@ -22,6 +23,11 @@ function Sidebar({
     setBlocked(newBlocked);
 
     setTrafficLevel(newBlocked ? 9 : 4);
+
+    // Notify parent so it can trigger reroute or other actions
+    if (typeof onBlockChange === "function") {
+      onBlockChange(newBlocked);
+    }
   }
 
   // Find Route
