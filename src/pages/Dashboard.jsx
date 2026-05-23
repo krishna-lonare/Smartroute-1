@@ -136,7 +136,7 @@ function Dashboard() {
           <MapView routeData={routeData} />
 
         </div>
-      </div>
+        </div>
     </div>
   );
 }
