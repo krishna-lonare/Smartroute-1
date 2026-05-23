@@ -14,11 +14,16 @@ function Dashboard() {
   const [routeData, setRouteData] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [trafficLevel, setTrafficLevel] = useState(4);
+  const [lastSource, setLastSource] = useState(null);
+  const [lastDestination, setLastDestination] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   async function handleRoute(source, destination) {
+    // remember last query for potential reroutes
+    setLastSource(source);
+    setLastDestination(destination);
     setLoading(true);
     setError(null);
 
@@ -71,6 +76,16 @@ function Dashboard() {
     }
   }
 
+  // Called when Sidebar toggles a block — optionally trigger reroute
+  function handleBlockChange(blocked) {
+    setTrafficLevel(blocked ? 9 : 4);
+
+    // If we have a last route, attempt a quick recalculation
+    if (lastSource && lastDestination) {
+      handleRoute(lastSource, lastDestination);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
 
@@ -83,6 +98,7 @@ function Dashboard() {
           trafficLevel={trafficLevel}
           setTrafficLevel={setTrafficLevel}
           loading={loading}
+          onBlockChange={handleBlockChange}
         />
 
         <div className="flex-1 p-4 md:p-6 flex flex-col gap-6">
@@ -133,7 +149,7 @@ function Dashboard() {
             trafficLevel={trafficLevel}
           />
 
-          <MapView routeData={routeData} />
+          <MapView routeData={routeData} trafficLevel={trafficLevel} />
 
         </div>
         </div>
